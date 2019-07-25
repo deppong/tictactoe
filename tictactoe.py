@@ -10,6 +10,7 @@ player = ['O', 'X']
 turnCount = 0
 gameOver = False
 
+# print screan and draw board with what character is stored in each array board[row][col]
 def drawBoard():
     x=sp.call('cls',shell=True)
     print(" %c | %c | %c " % (board[0][0],board[0][1],board[0][2]))    
@@ -29,7 +30,7 @@ def checkWin():
     if board[0][0] == board[1][1] == board[2][2] != " " or board[0][2] == board[1][1] == board[2][0] != " ":
         return True
 
-
+# convert position 1-9 to the [row][col] format
 def getPos(num):
     if num < 4:
         row = 0
@@ -43,7 +44,7 @@ def getPos(num):
         col = 2
     return row, col
 
-
+# check who's turn it is by checking the amount of turns
 def whosTurn():
     if (turnCount % 2) == 0:
         return 0
@@ -52,10 +53,12 @@ def whosTurn():
 
 
 def runTurn():
+    # upkeep the turn count and set whos turn it is
     global turnCount
     turnCount += 1
     global playerTurn
     playerTurn = whosTurn()
+    # getting player input
     try:
         position = int(input("Choose your position (1-9): ").strip())
         position = getPos(position)
@@ -83,6 +86,7 @@ def restart():
 
         os.execv(sys.executable, ['python'] + sys.argv)
 
+
 def playAgain():
     check = str(input("Would you like to play again? (Y/N): ")).lower().strip()
     try:
@@ -98,7 +102,9 @@ def playAgain():
         print(error)
         return playAgain
 
+
 def playGame():
+    # run 9 turns and check if anybody won each turn
     while turnCount < 9:
         drawBoard()
         runTurn()
@@ -106,10 +112,10 @@ def playGame():
         if checkWin():
             print(player[playerTurn] + ' Won!!')
             break
-
-    
-
-
+    if not checkWin():
+        print("Game is a tie!")
+        
+# main game loop abstracted
 playGame()
 if playAgain():
     restart()
